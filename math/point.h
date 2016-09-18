@@ -18,12 +18,16 @@ class Point2D
     Point2D operator+(const Point2D a) const;
     Point2D operator-() const;
     Point2D operator-(const Point2D a) const;
+    Point2D operator*(const double a) const;
+    Point2D operator/(const double a) const;
 
     bool operator==(const Point2D a) const;
     bool operator!=(const Point2D a) const;
 
     Point2D& operator+=(const Point2D a);
     Point2D& operator-=(const Point2D a);
+    Point2D& operator*=(const double a);
+    Point2D& operator/=(const double a);
 
     std::string to_string() const;
 };
@@ -40,12 +44,16 @@ class Point3D
     Point3D operator+(const Point3D a) const;
     Point3D operator-() const;
     Point3D operator-(const Point3D a) const;
+    Point3D operator*(const double a) const;
+    Point3D operator/(const double a) const;
 
     bool operator==(const Point3D a) const;
     bool operator!=(const Point3D a) const;
 
     Point3D& operator+=(const Point3D a);
     Point3D& operator-=(const Point3D a);
+    Point3D& operator*=(const double a);
+    Point3D& operator/=(const double a);
 
     std::string to_string() const;
 };

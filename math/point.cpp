@@ -27,6 +27,14 @@ Point2D Point2D::operator -(const Point2D a) const {
   return Point2D(x - a.x, y - a.y);
 }
 
+Point2D Point2D::operator *(const double a) const {
+  return Point2D(x * a, y * a);
+}
+
+Point2D Point2D::operator /(const double a) const {
+  return Point2D(x / a, y / a);
+}
+
 std::string Point2D::to_string() const {
   return "[" + std::to_string(x) + ", " + std::to_string(y) + "]";
 }
@@ -48,6 +56,18 @@ Point2D& Point2D::operator +=(const Point2D a) {
 Point2D& Point2D::operator -=(const Point2D a) {
   x -= a.x;
   y -= a.y;
+  return *this;
+}
+
+Point2D& Point2D::operator *=(const double a) {
+  x *= a;
+  y *= a;
+  return *this;
+}
+
+Point2D& Point2D::operator /=(const double a) {
+  x /= a;
+  y /= a;
   return *this;
 }
 
@@ -85,6 +105,14 @@ Point3D Point3D::operator -(const Point3D a) const {
   return Point3D(x - a.x, y - a.y, z - a.z);
 }
 
+Point3D Point3D::operator *(const double a) const {
+  return Point3D(x * a, y * a, z * a);
+}
+
+Point3D Point3D::operator /(const double a) const {
+  return Point3D(x / a, y / a, z / a);
+}
+
 std::string Point3D::to_string() const {
   return "[" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + "]";
 }
@@ -108,5 +136,19 @@ Point3D& Point3D::operator -=(const Point3D a) {
   x -= a.x;
   y -= a.y;
   z -= a.z;
+  return *this;
+}
+
+Point3D& Point3D::operator *=(const double a) {
+  x *= a;
+  y *= a;
+  z *= a;
+  return *this;
+}
+
+Point3D& Point3D::operator /=(const double a) {
+  x /= a;
+  y /= a;
+  z /= a;
   return *this;
 }
