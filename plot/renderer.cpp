@@ -7,7 +7,7 @@
 #include "colour.h"
 #include "../main.h"
 
-Renderer* Renderer::_current = NULL;
+Renderer* Renderer::s_current = NULL;
 
 Renderer::Renderer() :
   window(),
@@ -29,6 +29,8 @@ Renderer::Renderer() :
   pixels = (Uint32 *)screen_surface->pixels;
 
   SDL_FillRect( screen_surface, NULL, SDL_MapRGB( screen_surface->format, 0xFF, 0xFF, 0xFF ) );
+
+  s_current = this;
 }
 
 Renderer::~Renderer() {
@@ -36,8 +38,13 @@ Renderer::~Renderer() {
   SDL_Quit();
 }
 
+Renderer* Renderer::current() {
+  return s_current;
+}
+
 void Renderer::update_window() {
   SDL_UpdateWindowSurface(window);
+  SDL_FillRect( screen_surface, NULL, SDL_MapRGB( screen_surface->format, 0xFF, 0xFF, 0xFF ) );
 }
 
 void Renderer::put_pixel(int x, int y, Colour c) {

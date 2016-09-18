@@ -17,8 +17,12 @@ class Renderer
 
     void put_pixel(int x, int y, Colour c);
 
+    SDL_Window* get_window() const {
+      return window;
+    }
+
   private:
-    static Renderer* _current;
+    static Renderer* s_current;
 
     SDL_Window* window;
     SDL_Surface* screen_surface;
