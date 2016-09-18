@@ -4,7 +4,7 @@ DEPS = $(SOURCES:%.cpp=%.d)
 TARGET = fg
 
 CFLAGS = -std=gnu++14
-LFLAGS = -lm
+LFLAGS = -lm -lSDL2
 
 all: $(TARGET)
 

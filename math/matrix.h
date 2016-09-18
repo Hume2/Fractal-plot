@@ -58,7 +58,7 @@ class Matrix3D
      * SHEAR_XY (X, Y, 0)
      * SHEAR_XZ (X, Z, 0)
      * SHEAR_YZ (Y, Z, 0)
-     * ROTATE (A, B, G)
+     * ROTATE (A, B, G) jaw, pitch and roll
      */
 
     Matrix3D();
