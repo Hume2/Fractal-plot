@@ -3,8 +3,8 @@
 
 #include <vector>
 
-class Matrix2D;
-class Point2D;
+#include "matrix.h"
+#include "point.h"
 
 class Fractal
 {
@@ -17,7 +17,18 @@ class Fractal
     void draw(Point2D pos);
 
   private:
-    void iterate(Point2D pos, Matrix2D matrix, int iter);
+    void iterate(Point2D pos, Point2D point_pos, Matrix2D matrix, int iter);
+
+    struct BranchRequest {
+      public:
+        BranchRequest(Matrix2D transform_, Point2D pos_) :
+          transform(transform_),
+          pos(pos_)
+        { }
+
+        Matrix2D transform;
+        Point2D pos;
+    };
 };
 
 #endif // FRACTAL_H

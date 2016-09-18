@@ -14,10 +14,13 @@ class Rectangle
 
     void set_size(const double width, const double height);
     void set_pos(const Point2D pos);
+    void adjust_point(const Point2D p);
 
     Point2D get_center() const;
     double get_width() const;
     double get_height() const;
+
+    bool is_on_screen() const;
 
     Point2D p1, p2;
 };

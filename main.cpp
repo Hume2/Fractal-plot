@@ -18,54 +18,60 @@ int main(int argc, char *argv[])
   Renderer renderer;
 
   Fractal f;
-  f.branches.push_back(Matrix2D(0.5, 0.0, 0.0,
-                                0.0, 0.5, 0.0,
+  f.branches.push_back(Matrix2D(0.3, 0.0, -50,
+                                0.0, 0.3, -50,
                                 0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.5, 0.0, 100,
-                                0.0, 0.5, 0.0,
+  f.branches.push_back(Matrix2D(0.3, 0.0, 0.0,
+                                0.0, 0.3, -50,
                                 0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.5, 0.0,  50,
-                                0.0, 0.5, 100,
+  f.branches.push_back(Matrix2D(0.3, 0.0, +50,
+                                0.0, 0.3, -50,
+                                0.0, 0.0, 1.0));
+  f.branches.push_back(Matrix2D(0.3, 0.0, +50,
+                                0.0, 0.3, 0.0,
+                                0.0, 0.0, 1.0));
+  f.branches.push_back(Matrix2D(0.3, 0.0, +50,
+                                0.0, 0.3, +50,
+                                0.0, 0.0, 1.0));
+  f.branches.push_back(Matrix2D(0.3, 0.0, 0.0,
+                                0.0, 0.3, +50,
+                                0.0, 0.0, 1.0));
+  f.branches.push_back(Matrix2D(0.3, 0.0, -50,
+                                0.0, 0.3, +50,
+                                0.0, 0.0, 1.0));
+  f.branches.push_back(Matrix2D(0.3, 0.0, -50,
+                                0.0, 0.3, 0.0,
                                 0.0, 0.0, 1.0));
 
-  double p = 0;
+  double px = 0, py = 0;
   int last_ticks = SDL_GetTicks();
   bool quit = false;
   while (!quit)
   {
-    f.draw(Point2D(p, p/2));
+    f.draw(Point2D(px, py));
     renderer.update_window();
-    p += 1;
 
     int next_ticks = SDL_GetTicks();
     std::cout << (1000 / (next_ticks - last_ticks)) << "FPS" << std::endl;
     last_ticks = next_ticks;
 
     SDL_Event event;
-    bool leftMouseButtonDown;
-    SDL_PollEvent(&event);
-
-    switch (event.type)
-    {
-    case SDL_MOUSEBUTTONUP:
-        if (event.button.button == SDL_BUTTON_LEFT) {
-         leftMouseButtonDown = false;
-        }
+    while (SDL_PollEvent(&event)) {
+      switch (event.type)
+      {
+        case SDL_MOUSEMOTION:
+          px = event.motion.x;
+          py = event.motion.y;
         break;
-    case SDL_MOUSEBUTTONDOWN:
-        if (event.button.button == SDL_BUTTON_LEFT)
-            leftMouseButtonDown = true;
-    case SDL_MOUSEMOTION:
-        if (leftMouseButtonDown)
-        {
-            int mouseX = event.motion.x;
-            int mouseY = event.motion.y;
-            Renderer::current()->put_pixel(mouseX, mouseY, Colour(0xFF, 0x00, 0x00));
-        }
-        break;
-    case SDL_QUIT:
-        quit = true;
-        break;
+        case SDL_KEYDOWN:
+          if (event.key.keysym.sym == SDLK_ESCAPE) {
+            quit = true;
+          }
+          break;
+        case SDL_QUIT:
+          quit = true;
+          break;
+      }
     }
   }
 
