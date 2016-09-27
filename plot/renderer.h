@@ -16,7 +16,9 @@ class Renderer
 
     void update_window();
 
-    void put_pixel(int x, int y, Colour c);
+    //Returns false when not drawn
+    bool put_pixel(int x, int y, Colour c);
+
     void fill_rect(int x1, int y1, int x2, int y2, Colour c);
 
     void set_offset(int x, int y);

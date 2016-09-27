@@ -19,41 +19,28 @@ int main(int argc, char *argv[])
   srandom(time(0));
   Renderer renderer;
 
+  Fractal background;
+  background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
+                                       Point2D(0, 0)));
+  background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
+                                       Point2D(640, 0)));
+  background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
+                                       Point2D(0, 480)));
+  background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
+                                       Point2D(640, 480)));
+  background.calculate_chance_suma();
+  background.colour = Colour(100, 200, 255);
+  background.maxiter *= 10;
+
   Fractal f;
-/*  f.branches.push_back(Matrix2D(0.3, 0.0, -50,
-                                0.0, 0.3, -50,
-                                0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.3, 0.0, 0.0,
-                                0.0, 0.3, -50,
-                                0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.3, 0.0, +50,
-                                0.0, 0.3, -50,
-                                0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.3, 0.0, +50,
-                                0.0, 0.3, 0.0,
-                                0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.3, 0.0, +50,
-                                0.0, 0.3, +50,
-                                0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.3, 0.0, 0.0,
-                                0.0, 0.3, +50,
-                                0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.3, 0.0, -50,
-                                0.0, 0.3, +50,
-                                0.0, 0.0, 1.0));
-  f.branches.push_back(Matrix2D(0.3, 0.0, -50,
-                                0.0, 0.3, 0.0,
-                                0.0, 0.0, 1.0));*/
   f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
                                        Point2D(0, 0)));
   f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(640, 0)));
+                                       Point2D(100, 0)));
   f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(0, 480)));
-  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(640, 480)));
-
+                                       Point2D(0, 100)));
   f.calculate_chance_suma();
+  f.colour = Colour(64, 128, 0);
 
   double px = 0, py = 0;
   int last_ticks = SDL_GetTicks();
@@ -61,6 +48,7 @@ int main(int argc, char *argv[])
   while (!quit)
   {
     f.draw(Point2D(px, py));
+    background.draw(Point2D(0, 0));
     renderer.update_window();
 
     int next_ticks = SDL_GetTicks();

@@ -48,17 +48,18 @@ Renderer* Renderer::current() {
 
 void Renderer::update_window() {
   SDL_UpdateWindowSurface(window);
-  SDL_FillRect( screen_surface, NULL, SDL_MapRGB( screen_surface->format, 0xFF, 0xFF, 0xFF ) );
+  //SDL_FillRect( screen_surface, NULL, SDL_MapRGB( screen_surface->format, 0xFF, 0xFF, 0xFF ) );
 }
 
-void Renderer::put_pixel(int x, int y, Colour c) {
+bool Renderer::put_pixel(int x, int y, Colour c) {
   x += offset_x;
   y += offset_y;
   if (x < 0 || y < 0 || x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT) {
-    return;
+    return false;
   }
 
   pixels[y * SCREEN_WIDTH + x] = SDL_MapRGB( screen_surface->format, c.r, c.g, c.b );
+  return true;
 }
 
 void Renderer::fill_rect(int x1, int y1, int x2, int y2, Colour c) {

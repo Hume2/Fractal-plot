@@ -6,6 +6,8 @@
 #include "matrix.h"
 #include "point.h"
 
+#include "../plot/colour.h"
+
 class Fractal
 {
   public:
@@ -26,6 +28,7 @@ class Fractal
 
     int maxiter;
     std::vector<Branch> branches;
+    Colour colour;
 
     void draw(Point2D pos);
     int choose() const;

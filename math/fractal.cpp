@@ -10,8 +10,9 @@
 
 Fractal::Fractal() :
   branches(),
-  maxiter(100000),
-  chance_suma()
+  maxiter(1000),
+  chance_suma(),
+  colour(0, 0, 0)
 {
 
 }
@@ -38,12 +39,22 @@ int Fractal::choose() const {
 void Fractal::draw(Point2D pos) {
   Renderer::current()->set_offset(pos.x, pos.y);
   Point2D seed;
+  int off_screen;
   for (int i = maxiter; i > 0; i--) {
     int r = choose();
     Point2D& vertex_pos = branches[r].pos;
     seed -= vertex_pos;
     seed = branches[r].transform.apply_transform(seed);
     seed += vertex_pos;
-    Renderer::current()->put_pixel(seed.x, seed.y, Colour(0, 0, 0));
+    if (Renderer::current()->put_pixel(seed.x, seed.y, colour)) {
+      off_screen = 0;
+    } else {
+      off_screen++;
+      if (off_screen > 500) {
+        //The fractal is most likely off-screen, interrupt drawing.
+        break;
+      }
+    }
+    //Renderer::current()->fill_rect(seed.x, seed.y, seed.x+3, seed.y+3, Colour(0, 0, 0));
   }
 }
