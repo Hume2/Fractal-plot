@@ -1,5 +1,8 @@
 #include "point.h"
 
+#include "../main.h"
+#include "../plot/renderer.h"
+
 Point2D::Point2D() :
   x(0),
   y(0)
@@ -69,6 +72,12 @@ Point2D& Point2D::operator /=(const double a) {
   x /= a;
   y /= a;
   return *this;
+}
+
+bool Point2D::is_on_screen() const {
+  Point2D offset = Renderer::current()->get_offset();
+  return x < SCREEN_WIDTH - offset.x  && x >= -offset.x &&
+         y < SCREEN_HEIGHT - offset.y && y >= -offset.y;
 }
 
 //------------------------------------------------------------------------------

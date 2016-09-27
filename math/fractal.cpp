@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <random>
 
 #include "fractal.h"
 
@@ -9,41 +10,40 @@
 
 Fractal::Fractal() :
   branches(),
-  maxiter(5)
+  maxiter(100000),
+  chance_suma()
 {
 
 }
 
-void Fractal::iterate(Point2D pos, Point2D point_pos, Matrix2D matrix, int iter) {
-  //Point2D point_pos = matrix.apply_transform(pos);
-  Rectangle point_rect(point_pos, point_pos);
-  std::vector<BranchRequest> branch_requests;
-  if (iter < maxiter) {
-    for (auto& it : branches) {
-      Matrix2D new_matrix = matrix * it;
-      Point2D new_pos = new_matrix.apply_transform(pos);
-      branch_requests.push_back(BranchRequest(new_matrix, new_pos));
-      point_rect.adjust_point(new_pos);
-      //iterate(pos, new_matrix.apply_transform(pos), new_matrix, iter + 1);
-    }
+void Fractal::calculate_chance_suma() {
+  chance_suma = 0;
+  for (auto& it : branches) {
+    chance_suma += it.chance;
   }
+}
 
-  if (iter < maxiter && point_rect.get_width() > 1.0f && point_rect.get_height() > 1.0f) {
-    for (auto& it : branch_requests) {
-      iterate(pos, it.pos, it.transform, iter + 1);
-      //Renderer::current()->fill_rect(it.pos.x, it.pos.y, it.pos.x, it.pos.y, Colour(255, 0, 0));
-    }
-  } else {
-    if (point_rect.is_on_screen()) {
-      Renderer::current()->fill_rect(point_rect.p1.x, point_rect.p1.y, point_rect.p2.x, point_rect.p2.y,
-                                     Colour(0, 0, 0));
-      //Renderer::current()->put_pixel(point_pos.x, point_pos.y, Colour(0, 0, 0));
-    }
-  }
+int Fractal::choose() const {
+  double r = static_cast<double>(rand()) / static_cast<double>(RAND_MAX) * chance_suma;
+  //std::cout << r << " " << chance_suma << std::endl;
+  int j = 0;
+  do {
+    r -= branches[j].chance;
+    j++;
+  } while ((r >= 0) && (j <= branches.size()));
+  j--;
+  return j;
 }
 
 void Fractal::draw(Point2D pos) {
   Renderer::current()->set_offset(pos.x, pos.y);
-  Matrix2D initial_matrix = Matrix2D(Matrix2D::TRANSLATE, 0, 0);
-  iterate(Point2D(0, 0), initial_matrix.apply_transform(pos), initial_matrix, 0);
+  Point2D seed;
+  for (int i = maxiter; i > 0; i--) {
+    int r = choose();
+    Point2D& vertex_pos = branches[r].pos;
+    seed -= vertex_pos;
+    seed = branches[r].transform.apply_transform(seed);
+    seed += vertex_pos;
+    Renderer::current()->put_pixel(seed.x, seed.y, Colour(0, 0, 0));
+  }
 }

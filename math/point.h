@@ -30,6 +30,8 @@ class Point2D
     Point2D& operator/=(const double a);
 
     std::string to_string() const;
+
+    bool is_on_screen() const;
 };
 
 class Point3D

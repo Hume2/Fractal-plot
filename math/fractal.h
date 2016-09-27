@@ -9,26 +9,31 @@
 class Fractal
 {
   public:
-    Fractal();
-
-    int maxiter;
-    std::vector<Matrix2D> branches;
-
-    void draw(Point2D pos);
-
-  private:
-    void iterate(Point2D pos, Point2D point_pos, Matrix2D matrix, int iter);
-
-    struct BranchRequest {
+    struct Branch {
       public:
-        BranchRequest(Matrix2D transform_, Point2D pos_) :
+        Branch(const Matrix2D transform_, const Point2D pos_, const double chance_ = 1.0f) :
           transform(transform_),
-          pos(pos_)
+          pos(pos_),
+          chance(chance_)
         { }
 
         Matrix2D transform;
         Point2D pos;
+        double chance;
     };
+
+    Fractal();
+
+    int maxiter;
+    std::vector<Branch> branches;
+
+    void draw(Point2D pos);
+    int choose() const;
+
+    void calculate_chance_suma();
+
+  private:
+    double chance_suma;
 };
 
 #endif // FRACTAL_H
