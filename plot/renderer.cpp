@@ -6,9 +6,10 @@
 
 #include "colour.h"
 #include "../main.h"
-#include "../math/point.h"
 
 Renderer* Renderer::s_current = NULL;
+Point2D Renderer::center = Point2D(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+float Renderer::perspective_factor = 400;
 
 Renderer::Renderer() :
   window(),
@@ -51,7 +52,7 @@ void Renderer::update_window() {
   //SDL_FillRect( screen_surface, NULL, SDL_MapRGB( screen_surface->format, 0xFF, 0xFF, 0xFF ) );
 }
 
-bool Renderer::put_pixel(int x, int y, Colour c) {
+bool Renderer::put_pixel(int x, int y, const Colour c) {
   x += offset_x;
   y += offset_y;
   if (x < 0 || y < 0 || x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT) {
@@ -62,7 +63,18 @@ bool Renderer::put_pixel(int x, int y, Colour c) {
   return true;
 }
 
-void Renderer::fill_rect(int x1, int y1, int x2, int y2, Colour c) {
+bool Renderer::put_pixel(const Point3D p, const Colour c) {
+  if (p.z <= 0) {
+    return false;
+  } else {
+    float perspective = perspective_factor / p.z;
+    Point2D projection(p * perspective);
+    projection += center;
+    return put_pixel(projection.x, projection.y, c);
+  }
+}
+
+void Renderer::fill_rect(int x1, int y1, int x2, int y2, const Colour c) {
   SDL_Rect dsrect;
   dsrect.x = x1 + offset_x;
   dsrect.y = y1 + offset_y;

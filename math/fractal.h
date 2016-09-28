@@ -27,6 +27,7 @@ class Fractal
     Fractal();
 
     int maxiter;
+    int offscreen_factor;
     std::vector<Branch> branches;
     Colour colour;
 

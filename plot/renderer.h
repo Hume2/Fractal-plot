@@ -3,8 +3,9 @@
 
 #include <SDL2/SDL.h>
 
+#include "../math/point.h"
+
 class Colour;
-class Point2D;
 
 class Renderer
 {
@@ -17,9 +18,10 @@ class Renderer
     void update_window();
 
     //Returns false when not drawn
-    bool put_pixel(int x, int y, Colour c);
+    bool put_pixel(int x, int y, const Colour c);
+    bool put_pixel(const Point3D p, const Colour c);
 
-    void fill_rect(int x1, int y1, int x2, int y2, Colour c);
+    void fill_rect(int x1, int y1, int x2, int y2, const Colour c);
 
     void set_offset(int x, int y);
 
@@ -31,6 +33,8 @@ class Renderer
 
   private:
     static Renderer* s_current;
+    static Point2D center;
+    static float perspective_factor;
 
     SDL_Window* window;
     SDL_Surface* screen_surface;

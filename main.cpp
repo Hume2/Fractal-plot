@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
                                        Point2D(640, 480)));
   background.calculate_chance_suma();
   background.colour = Colour(100, 200, 255);
-  background.maxiter *= 10;
 
   Fractal f;
   f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
@@ -39,16 +38,23 @@ int main(int argc, char *argv[])
                                        Point2D(100, 0)));
   f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
                                        Point2D(0, 100)));
+  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
+                                       Point2D(100, 100)));
   f.calculate_chance_suma();
   f.colour = Colour(64, 128, 0);
+  f.maxiter /= 10;
+
+  Fractal g = f;
+  g.colour = Colour(255, 0, 0);
 
   double px = 0, py = 0;
   int last_ticks = SDL_GetTicks();
   bool quit = false;
   while (!quit)
   {
-    f.draw(Point2D(px, py));
     background.draw(Point2D(0, 0));
+    g.draw(Point2D(100, 100));
+    f.draw(Point2D(px, py));
     renderer.update_window();
 
     int next_ticks = SDL_GetTicks();

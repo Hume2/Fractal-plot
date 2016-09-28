@@ -11,6 +11,7 @@
 Fractal::Fractal() :
   branches(),
   maxiter(1000),
+  offscreen_factor(100),
   chance_suma(),
   colour(0, 0, 0)
 {
@@ -48,9 +49,9 @@ void Fractal::draw(Point2D pos) {
     seed += vertex_pos;
     if (Renderer::current()->put_pixel(seed.x, seed.y, colour)) {
       off_screen = 0;
-    } else {
+    } else if (offscreen_factor >= 0) {
       off_screen++;
-      if (off_screen > 500) {
+      if (off_screen > 100) {
         //The fractal is most likely off-screen, interrupt drawing.
         break;
       }
