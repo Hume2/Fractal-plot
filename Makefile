@@ -1,4 +1,4 @@
-SOURCES = $(wildcard *.cpp) $(wildcard math/*.cpp) $(wildcard plot/*.cpp)
+SOURCES = $(wildcard *.cpp) $(wildcard engine/*.cpp) $(wildcard math/*.cpp) $(wildcard plot/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
 DEPS = $(SOURCES:%.cpp=%.d)
 TARGET = fg

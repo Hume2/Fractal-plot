@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "../math/matrix.h"
 #include "../math/point.h"
 
 class Colour;
@@ -19,11 +20,12 @@ class Renderer
 
     //Returns false when not drawn
     bool put_pixel(int x, int y, const Colour c);
-    bool put_pixel(const Point3D p, const Colour c);
+    bool put_pixel(Point3D p, const Colour c);
 
     void fill_rect(int x1, int y1, int x2, int y2, const Colour c);
 
     void set_offset(int x, int y);
+    void set_transform_matrix(const Matrix3D matrix);
 
     Point2D get_offset() const;
 
@@ -43,6 +45,7 @@ class Renderer
     Uint32* pixels;
 
     int offset_x, offset_y;
+    Matrix3D transform_matrix;
 };
 
 #endif // RENDERER_H

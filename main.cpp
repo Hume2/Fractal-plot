@@ -7,6 +7,8 @@
 
 #include "main.h"
 
+#include "engine/specator.h"
+
 #include "math/fractal.h"
 #include "math/matrix.h"
 #include "math/point.h"
@@ -18,6 +20,7 @@ int main(int argc, char *argv[])
 {
   srandom(time(0));
   Renderer renderer;
+  Specator specator;
 
   Fractal3D background;
   background.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5f, 0.5f, 0.5f),
@@ -40,7 +43,7 @@ int main(int argc, char *argv[])
                                        Point2D(187, 25), Colour(125, 231, 0)));
   f.calculate_chance_suma();*/
   Fractal3D f;
-  f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5),
+  f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5) * Matrix3D(Matrix3D::ROTATE, 0, 0, 0),
                                          Point3D(0, 0, 0), Colour(0, 0, 0)));
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5),
                                          Point3D(100, 0, 0), Colour(255, 0, 0)));
@@ -48,16 +51,20 @@ int main(int argc, char *argv[])
                                          Point3D(0, 100, 0), Colour(0, 255, 0)));
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5),
                                          Point3D(0, 0, 100), Colour(0, 0, 255)));
-  f.pos.z = 400;
+  f.pos.z = 200;
 
   double px = 0, py = 0;
   int last_ticks = SDL_GetTicks();
   bool quit = false;
   while (!quit)
   {
+    //specator.set_pos(Point3D(px - 320, py - 240, 0));
+    specator.set_yaw(-(px - 320)/320);
+    specator.set_pitch(-(py - 240)/240);
+    specator.update();
     background.draw();
-    f.pos.x = px - 320;
-    f.pos.y = py - 240;
+    /*f.pos.x = px - 320;
+    f.pos.y = py - 240;*/
     f.draw();
     renderer.update_window();
 
@@ -74,8 +81,22 @@ int main(int argc, char *argv[])
           py = event.motion.y;
         break;
         case SDL_KEYDOWN:
-          if (event.key.keysym.sym == SDLK_ESCAPE) {
-            quit = true;
+          switch (event.key.keysym.sym) {
+            case SDLK_ESCAPE:
+              quit = true;
+              break;
+            case SDLK_UP:
+              specator.move(Point3D(0, 0, 10));
+              break;
+            case SDLK_DOWN:
+              specator.move(Point3D(0, 0, -10));
+              break;
+            case SDLK_LEFT:
+              specator.move(Point3D(-10, 0, 0));
+              break;
+            case SDLK_RIGHT:
+              specator.move(Point3D(10, 0, 0));
+              break;
           }
           break;
         case SDL_QUIT:

@@ -14,12 +14,13 @@ Point2D Renderer::center = Point2D(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 float Renderer::perspective_factor = 400;
 
 Renderer::Renderer() :
+  height_map(new float[SCREEN_WIDTH * SCREEN_HEIGHT]),
   window(),
   screen_surface(),
   pixels(),
   offset_x(0),
   offset_y(0),
-  height_map(new float[SCREEN_WIDTH * SCREEN_HEIGHT])
+  transform_matrix()
 {
   if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
     std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
@@ -71,7 +72,8 @@ bool Renderer::put_pixel(int x, int y, const Colour c) {
   return true;
 }
 
-bool Renderer::put_pixel(const Point3D p, const Colour c) {
+bool Renderer::put_pixel(Point3D p, const Colour c) {
+  p = transform_matrix.apply_transform(p);
   if (p.z <= 0) {
     return false;
   } else {
@@ -109,4 +111,8 @@ void Renderer::set_offset(int x, int y) {
 
 Point2D Renderer::get_offset() const {
   return Point2D(offset_x, offset_y);
+}
+
+void Renderer::set_transform_matrix(const Matrix3D matrix) {
+  transform_matrix = matrix;
 }
