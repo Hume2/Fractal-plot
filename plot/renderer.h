@@ -36,6 +36,8 @@ class Renderer
     static Point2D center;
     static float perspective_factor;
 
+    float* height_map;
+
     SDL_Window* window;
     SDL_Surface* screen_surface;
     Uint32* pixels;

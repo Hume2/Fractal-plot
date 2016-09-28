@@ -1,5 +1,7 @@
 #include <assert.h>
 #include <iostream>
+#include <limits>
+#include <random>
 #include <stdio.h>
 
 #include "renderer.h"
@@ -16,7 +18,8 @@ Renderer::Renderer() :
   screen_surface(),
   pixels(),
   offset_x(0),
-  offset_y(0)
+  offset_y(0),
+  height_map(new float[SCREEN_WIDTH * SCREEN_HEIGHT])
 {
   if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
     std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
@@ -36,9 +39,14 @@ Renderer::Renderer() :
   SDL_FillRect( screen_surface, NULL, SDL_MapRGB( screen_surface->format, 0xFF, 0xFF, 0xFF ) );
 
   s_current = this;
+
+  for (int i = SCREEN_WIDTH * SCREEN_HEIGHT - 1; i >= 0; i--) {
+    height_map[i] = std::numeric_limits<float>::max();
+  }
 }
 
 Renderer::~Renderer() {
+  delete[] height_map;
   SDL_DestroyWindow( window );
   SDL_Quit();
 }
@@ -71,12 +79,16 @@ bool Renderer::put_pixel(const Point3D p, const Colour c) {
     Point2D projection(p * perspective);
     projection += center;
 
-    if (projection.x < 0 || projection.y < 0 ||
-        projection.x >= SCREEN_WIDTH || projection.y >= SCREEN_HEIGHT) {
-      return false;
+    int px = projection.x, py = projection.y;
+    if (px < 0 || py < 0 || px >= SCREEN_WIDTH || py >= SCREEN_HEIGHT) {
+      return false; // The point is off-screen.
     }
-    pixels[int(projection.y) * SCREEN_WIDTH + int(projection.x)] =
-        SDL_MapRGB( screen_surface->format, c.r, c.g, c.b );
+    if (height_map[py * SCREEN_WIDTH + px] <= p.z &&
+        static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2 > 1) {
+      return false; // The point is behind existing point.
+    }
+    height_map[py * SCREEN_WIDTH + px] = p.z;
+    pixels[py * SCREEN_WIDTH + px] = SDL_MapRGB( screen_surface->format, c.r, c.g, c.b );
     return true;
   }
 }

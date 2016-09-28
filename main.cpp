@@ -19,16 +19,17 @@ int main(int argc, char *argv[])
   srandom(time(0));
   Renderer renderer;
 
-  Fractal background;
-  background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(0, 0), Colour(100, 200, 255)));
-  background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(640, 0), Colour(255, 255, 255)));
-  background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(0, 480), Colour(255, 255, 255)));
-  background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(640, 480), Colour(100, 200, 255)));
-  background.calculate_chance_suma();
+  Fractal3D background;
+  background.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5f, 0.5f, 0.5f),
+                                       Point3D(0, 0, 0), Colour(100, 200, 255)));
+  background.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5f, 0.5f, 0.5f),
+                                       Point3D(6400, 0, 0), Colour(255, 255, 255)));
+  background.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5f, 0.5f, 0.5f),
+                                       Point3D(0, 4800, 0), Colour(255, 255, 255)));
+  background.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5f, 0.5f, 0.5f),
+                                       Point3D(6400, 4800, 0), Colour(100, 200, 255)));
+  background.pos = Point3D(-3200, -2400, 4000);
+  background.maxiter *= 500;
 
   /*Fractal f;
   f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.7, -0.5) * Matrix2D(Matrix2D::ROTATE, 0, 0),
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
   bool quit = false;
   while (!quit)
   {
-    background.draw(Point2D(0, 0));
+    background.draw();
     f.pos.x = px - 320;
     f.pos.y = py - 240;
     f.draw();
