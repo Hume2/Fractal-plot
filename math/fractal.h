@@ -32,12 +32,48 @@ class Fractal
     int maxiter;
     int offscreen_factor;
     std::vector<Branch> branches;
-    //Colour colour;
 
     void draw(Point2D pos);
-    int choose() const;
 
-    virtual void calculate_chance_suma();
+    int choose() const;
+    void calculate_chance_suma();
+
+  private:
+    double chance_suma;
+};
+
+class Fractal3D
+{
+  public:
+    struct Branch {
+      public:
+        Branch(const Matrix3D transform_, const Point3D pos_,
+               const Colour c = Colour(0, 0, 0), const double chance_ = 1.0f) :
+          transform(transform_),
+          pos(pos_),
+          chance(chance_),
+          colour(c)
+        { }
+
+        Matrix3D transform;
+        Point3D pos;
+        double chance;
+        Colour colour;
+    };
+
+    Fractal3D();
+
+    Point3D pos;
+
+    int maxiter;
+    int offscreen_factor;
+    std::vector<Branch> branches;
+
+    void draw();
+
+    double get_chance(int id) const;
+    int choose() const;
+    void calculate_chance_suma();
 
   private:
     double chance_suma;
