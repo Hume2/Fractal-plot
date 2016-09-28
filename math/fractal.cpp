@@ -12,8 +12,8 @@ Fractal::Fractal() :
   branches(),
   maxiter(1000),
   offscreen_factor(100),
-  chance_suma(),
-  colour(0, 0, 0)
+  chance_suma()
+  //colour(0, 0, 0)
 {
 
 }
@@ -40,9 +40,11 @@ int Fractal::choose() const {
 void Fractal::draw(Point2D pos) {
   Renderer::current()->set_offset(pos.x, pos.y);
   Point2D seed;
+  Colour colour;
   int off_screen;
   for (int i = maxiter; i > 0; i--) {
     int r = choose();
+    colour.average(branches[r].colour);
     Point2D& vertex_pos = branches[r].pos;
     seed -= vertex_pos;
     seed = branches[r].transform.apply_transform(seed);
@@ -56,6 +58,5 @@ void Fractal::draw(Point2D pos) {
         break;
       }
     }
-    //Renderer::current()->fill_rect(seed.x, seed.y, seed.x+3, seed.y+3, Colour(0, 0, 0));
   }
 }

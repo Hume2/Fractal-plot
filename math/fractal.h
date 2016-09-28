@@ -13,15 +13,18 @@ class Fractal
   public:
     struct Branch {
       public:
-        Branch(const Matrix2D transform_, const Point2D pos_, const double chance_ = 1.0f) :
+        Branch(const Matrix2D transform_, const Point2D pos_,
+               const Colour c = Colour(0, 0, 0), const double chance_ = 1.0f) :
           transform(transform_),
           pos(pos_),
-          chance(chance_)
+          chance(chance_),
+          colour(c)
         { }
 
         Matrix2D transform;
         Point2D pos;
         double chance;
+        Colour colour;
     };
 
     Fractal();
@@ -29,12 +32,12 @@ class Fractal
     int maxiter;
     int offscreen_factor;
     std::vector<Branch> branches;
-    Colour colour;
+    //Colour colour;
 
     void draw(Point2D pos);
     int choose() const;
 
-    void calculate_chance_suma();
+    virtual void calculate_chance_suma();
 
   private:
     double chance_suma;

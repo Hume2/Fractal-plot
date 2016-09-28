@@ -70,7 +70,14 @@ bool Renderer::put_pixel(const Point3D p, const Colour c) {
     float perspective = perspective_factor / p.z;
     Point2D projection(p * perspective);
     projection += center;
-    return put_pixel(projection.x, projection.y, c);
+
+    if (projection.x < 0 || projection.y < 0 ||
+        projection.x >= SCREEN_WIDTH || projection.y >= SCREEN_HEIGHT) {
+      return false;
+    }
+    pixels[int(projection.y) * SCREEN_WIDTH + int(projection.x)] =
+        SDL_MapRGB( screen_surface->format, c.r, c.g, c.b );
+    return true;
   }
 }
 

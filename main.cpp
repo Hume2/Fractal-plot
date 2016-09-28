@@ -21,31 +21,26 @@ int main(int argc, char *argv[])
 
   Fractal background;
   background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(0, 0)));
+                                       Point2D(0, 0), Colour(100, 200, 255)));
   background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(640, 0)));
+                                       Point2D(640, 0), Colour(255, 255, 255)));
   background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(0, 480)));
+                                       Point2D(0, 480), Colour(255, 255, 255)));
   background.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(640, 480)));
+                                       Point2D(640, 480), Colour(100, 200, 255)));
   background.calculate_chance_suma();
-  background.colour = Colour(100, 200, 255);
+  //background.colour = Colour(100, 200, 255);
 
   Fractal f;
-  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(0, 0)));
-  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(100, 0)));
-  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(0, 100)));
-  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5f, 0.5f),
-                                       Point2D(100, 100)));
+  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5, 0.5),
+                                       Point2D(0, 0), Colour(64, 128, 0)));
+  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5, 0.5),
+                                       Point2D(100, 0), Colour(64, 128, 0)));
+  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.5, 0.5),
+                                       Point2D(0, 100), Colour(64, 128, 0)));
   f.calculate_chance_suma();
-  f.colour = Colour(64, 128, 0);
+  //f.colour = Colour(64, 128, 0);
   f.maxiter /= 10;
-
-  Fractal g = f;
-  g.colour = Colour(255, 0, 0);
 
   double px = 0, py = 0;
   int last_ticks = SDL_GetTicks();
@@ -53,7 +48,6 @@ int main(int argc, char *argv[])
   while (!quit)
   {
     background.draw(Point2D(0, 0));
-    g.draw(Point2D(100, 100));
     f.draw(Point2D(px, py));
     renderer.update_window();
 
