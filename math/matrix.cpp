@@ -187,18 +187,18 @@ Matrix3D::Matrix3D(Method method, const double x, const double y, const double z
       m = 0; n = 0; o = 0; p = 1;
       break;
     case ROTATE:
-      a = 1; b =       0; c =      0; d = 0;
-      e = 0; f =  cos(z); g = sin(z); h = 0;
-      i = 0; j = -sin(z); k = cos(z); l = 0;
+      a =  cos(x); b = 0; c = sin(x); d = 0;
+      e =       0; f = 1; g =      0; h = 0;
+      i = -sin(x); j = 0; k = cos(x); l = 0;
       m = 0; n =       0; o =      0; p = 1;
       add_transform(Matrix3D(
-         cos(y), 0, sin(y), 0,
-              0, 1,      0, 0,
-        -sin(y), 0, cos(y), 0,
-              0, 0,      0, 1));
+         1,       0,      0, 0,
+         0,  cos(y), sin(y), 0,
+         0, -sin(y), cos(y), 0,
+         0,       0,      0, 1));
       add_transform(Matrix3D(
-         cos(x), sin(x), 0, 0,
-        -sin(x), cos(x), 0, 0,
+         cos(z), sin(z), 0, 0,
+        -sin(z), cos(z), 0, 0,
               0,      0, 1, 0,
               0,      0, 0, 1));
       break;

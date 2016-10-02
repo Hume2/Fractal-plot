@@ -87,6 +87,6 @@ void Specator::set_yaw(const float angle) {
 
 void Specator::recalculate_matrix() {
   Point3D pos = get_pos();
-  look = Matrix3D(Matrix3D::ROTATE, 0, yaw, pitch);
+  look = Matrix3D(Matrix3D::ROTATE, yaw, pitch, 0);
   set_pos(pos);
 }
