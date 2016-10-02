@@ -15,6 +15,7 @@ float Renderer::perspective_factor = 400;
 
 Renderer::Renderer() :
   height_map(new float[SCREEN_WIDTH * SCREEN_HEIGHT]),
+  time_map(new int[SCREEN_WIDTH * SCREEN_HEIGHT]),
   window(),
   screen_surface(),
   pixels(),
@@ -43,11 +44,13 @@ Renderer::Renderer() :
 
   for (int i = SCREEN_WIDTH * SCREEN_HEIGHT - 1; i >= 0; i--) {
     height_map[i] = std::numeric_limits<float>::max();
+    time_map[i] = 0;
   }
 }
 
 Renderer::~Renderer() {
   delete[] height_map;
+  delete[] time_map;
   SDL_DestroyWindow( window );
   SDL_Quit();
 }
@@ -85,12 +88,16 @@ bool Renderer::put_pixel(Point3D p, const Colour c) {
     if (px < 0 || py < 0 || px >= SCREEN_WIDTH || py >= SCREEN_HEIGHT) {
       return false; // The point is off-screen.
     }
-    if (height_map[py * SCREEN_WIDTH + px] <= p.z &&
-        static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2 > 1) {
+
+    int pixel_pos = py * SCREEN_WIDTH + px;
+    int ticks = SDL_GetTicks();
+    if (height_map[pixel_pos] <= p.z &&
+        ticks - time_map[pixel_pos] < 1000) {
       return false; // The point is behind existing point.
     }
-    height_map[py * SCREEN_WIDTH + px] = p.z;
-    pixels[py * SCREEN_WIDTH + px] = SDL_MapRGB( screen_surface->format, c.r, c.g, c.b );
+    height_map[pixel_pos] = p.z;
+    time_map[pixel_pos] = ticks;
+    pixels[pixel_pos] = SDL_MapRGB( screen_surface->format, c.r, c.g, c.b );
     return true;
   }
 }

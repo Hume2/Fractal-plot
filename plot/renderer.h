@@ -39,6 +39,7 @@ class Renderer
     static float perspective_factor;
 
     float* height_map;
+    int* time_map;
 
     SDL_Window* window;
     SDL_Surface* screen_surface;
