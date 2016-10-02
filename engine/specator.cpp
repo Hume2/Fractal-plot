@@ -2,14 +2,13 @@
 
 #include "specator.h"
 
-#include "../math/point.h"
-
 #include "../plot/renderer.h"
 
 Specator::Specator() :
   look(),
   yaw(0),
-  pitch(0)
+  pitch(0),
+  pos(Point3D(0, 0, 0))
 {
 
 }
@@ -23,22 +22,24 @@ void Specator::set_look_matrix(const Matrix3D matrix) {
 }
 
 void Specator::shift(const Point3D shift) {
-  look.d -= shift.x;
-  look.h -= shift.y;
-  look.l -= shift.z;
+  pos += shift;
+  recalculate_matrix();
 }
 
 void Specator::move(const Point3D shift) {
-  look.add_transform(Matrix3D(Matrix3D::TRANSLATE, -shift.x, -shift.y, -shift.z));
+  Point3D aim = get_aim_vector();
+  pos.x += aim.x * shift.x;
+  pos.y += aim.y * shift.y;
+  pos.z += aim.z * shift.z;
+  recalculate_matrix();
 }
 
-void Specator::set_pos(const Point3D pos) {
-  look.d = -pos.x;
-  look.h = -pos.y;
-  look.l = -pos.z;
+void Specator::set_pos(const Point3D pos_) {
+  pos = pos_;
+  recalculate_matrix();
 }
 
-void Specator::turn_left(const float angle) {
+void Specator::turn_right(const float angle) {
   yaw += angle;
   while (yaw > M_PI) {
     yaw -= 2 * M_PI;
@@ -49,7 +50,7 @@ void Specator::turn_left(const float angle) {
   recalculate_matrix();
 }
 
-void Specator::turn_up(const float angle) {
+void Specator::turn_down(const float angle) {
   pitch += angle;
   if (pitch > M_PI_2) {
     pitch = M_PI_2;
@@ -60,7 +61,7 @@ void Specator::turn_up(const float angle) {
 }
 
 Point3D Specator::get_pos() const {
-  return Point3D(-look.d, -look.h, -look.l);
+  return pos;
 }
 
 Point3D Specator::get_aim_vector() const {
@@ -86,7 +87,6 @@ void Specator::set_yaw(const float angle) {
 }
 
 void Specator::recalculate_matrix() {
-  Point3D pos = get_pos();
-  look = Matrix3D(Matrix3D::ROTATE, yaw, pitch, 0);
-  set_pos(pos);
+  look = Matrix3D(Matrix3D::TRANSLATE, -pos.x, -pos.y, -pos.z) *
+         Matrix3D(Matrix3D::ROTATE, -yaw, -pitch, 0);
 }

@@ -2,8 +2,7 @@
 #define SPECATOR_H
 
 #include "../math/matrix.h"
-
-class Point3D;
+#include "../math/point.h"
 
 class Specator
 {
@@ -15,10 +14,10 @@ class Specator
     void set_look_matrix(const Matrix3D matrix);
     void move(const Point3D shift);
     void shift(const Point3D shift);
-    void set_pos(const Point3D pos);
-    void turn_left(const float angle);
+    void set_pos(const Point3D pos_);
+    void turn_right(const float angle);
     void set_yaw(const float angle);
-    void turn_up(const float angle);
+    void turn_down(const float angle);
     void set_pitch(const float angle);
 
     Point3D get_pos() const;
@@ -29,6 +28,7 @@ class Specator
   private:
     Matrix3D look;
     double yaw, pitch;
+    Point3D pos;
 
     void recalculate_matrix();
 };

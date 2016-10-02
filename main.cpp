@@ -59,8 +59,10 @@ int main(int argc, char *argv[])
   while (!quit)
   {
     //specator.set_pos(Point3D(px - 320, py - 240, 0));
-    specator.set_yaw(-(px - 320)/320);
-    specator.set_pitch(-(py - 240)/240);
+    //specator.set_yaw((px - 320)/320);
+    //specator.set_pitch((py - 240)/240);
+    specator.turn_right((px - 320)/32000);
+    specator.turn_down((py - 240)/24000);
     specator.update();
     background.draw();
     /*f.pos.x = px - 320;
