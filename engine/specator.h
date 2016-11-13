@@ -12,7 +12,8 @@ class Specator
     void update(/*int elapsed_time*/);
 
     void set_look_matrix(const Matrix3D matrix);
-    void move(const Point3D shift);
+    void move_forwards(const double shift);
+    void move_sidewards(const double shift);
     void shift(const Point3D shift);
     void set_pos(const Point3D pos_);
     void turn_right(const float angle);
@@ -22,6 +23,7 @@ class Specator
 
     Point3D get_pos() const;
     Point3D get_aim_vector() const;
+    Point3D get_side_vector() const;
     double get_yaw() const;
     double get_pitch() const;
 

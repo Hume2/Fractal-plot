@@ -3,8 +3,8 @@ OBJECTS = $(SOURCES:.cpp=.o)
 DEPS = $(SOURCES:%.cpp=%.d)
 TARGET = fg
 
-CFLAGS = -std=gnu++14
-LFLAGS = -lm -lSDL2
+CFLAGS = -std=gnu++14 -Ofast
+LFLAGS = -lm -lSDL2 -Ofast
 
 all: $(TARGET)
 

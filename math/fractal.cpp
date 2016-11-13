@@ -73,14 +73,16 @@ Fractal3D::Fractal3D() :
 
 }
 
-double Fractal3D::get_chance(int id) const {
-  return branches[id].chance / (branches[id].pos.z + pos.z) * 100;
-}
-
-void Fractal3D::calculate_chance_suma() {
+void Fractal3D::precalculate_branches() {
   chance_suma = 0;
-  for (int i = branches.size() - 1; i >= 0; i--) {
-    chance_suma += get_chance(i);
+  for (int id = branches.size() - 1; id >= 0; id--) {
+    Point3D p = branches[id].pos + pos;
+    branches[id].real_transform = Matrix3D(Matrix3D::TRANSLATE, p.x, p.y, p.z) *
+                                  branches[id].transform *
+                                  Matrix3D(Matrix3D::TRANSLATE, -p.x, -p.y, -p.z);
+
+    branches[id].real_chance = branches[id].chance / (p.z + pos.z) * 100;
+    chance_suma += branches[id].real_chance;
   }
 }
 
@@ -88,7 +90,7 @@ int Fractal3D::choose() const {
   double r = static_cast<double>(rand()) / static_cast<double>(RAND_MAX) * chance_suma;
   int j = 0;
   do {
-    r -= get_chance(j);
+    r -= branches[j].real_chance;
     j++;
   } while ((r >= 0) && (j <= branches.size()));
   j--;
@@ -96,7 +98,7 @@ int Fractal3D::choose() const {
 }
 
 void Fractal3D::draw() {
-  calculate_chance_suma();
+  precalculate_branches();
   Point3D seed;
   Colour colour;
   int off_screen;
@@ -105,15 +107,16 @@ void Fractal3D::draw() {
   for (int i = maxiter * distance_factor; i > 0; i--) {
     int r = choose();
     colour.average(branches[r].colour);
-    Point3D& vertex_pos = branches[r].pos;
+    /*Point3D& vertex_pos = branches[r].real_pos;
     seed -= vertex_pos;
     seed = branches[r].transform.apply_transform(seed);
-    seed += vertex_pos;
-    if (Renderer::current()->put_pixel(seed + pos, colour)) {
+    seed += vertex_pos;*/
+    seed = branches[r].real_transform.apply_transform(seed);
+    if (Renderer::current()->put_pixel(seed, colour)) {
       off_screen = 0;
-    } else if (offscreen_factor >= 0) {
+    } else {
       off_screen++;
-      if (off_screen > 100) {
+      if (off_screen > offscreen_factor) {
         //The fractal is most likely off-screen, interrupt drawing.
         break;
       }

@@ -34,15 +34,17 @@ int main(int argc, char *argv[])
   background.pos = Point3D(-3200, -2400, 4000);
   background.maxiter *= 500;
 
-  /*Fractal f;
-  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.7, -0.5) * Matrix2D(Matrix2D::ROTATE, 0, 0),
-                                       Point2D(103, 245), Colour(196, 81, 12)));
-  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.611, 0.611) * Matrix2D(Matrix2D::ROTATE, 0.45, 0),
-                                       Point2D(13, 50), Colour(30, 215, 0)));
-  f.branches.push_back(Fractal::Branch(Matrix2D(Matrix2D::SCALE, 0.591, 0.591) * Matrix2D(Matrix2D::ROTATE, -1.03, 0),
-                                       Point2D(187, 25), Colour(125, 231, 0)));
-  f.calculate_chance_suma();*/
   Fractal3D f;
+  f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.3, -0.7, 0.3),
+                                       Point3D(0, 0, 0), Colour(196, 81, 12)));
+  f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.611, 0.611, 0.611) * Matrix3D(Matrix3D::ROTATE, 0, 1.12, 0),
+                                       Point3D(50, -50, 0), Colour(30, 215, 0)));
+  f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.591, 0.591, 0.591) * Matrix3D(Matrix3D::ROTATE, 1.03, 1.04, 0),
+                                       Point3D(-20, -52, 37), Colour(125, 231, 0)));
+  f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.540, 0.540, 0.540) * Matrix3D(Matrix3D::ROTATE, -1.23, 1.18, 0),
+                                       Point3D(-24, -43, -35), Colour(68, 240, 0)));
+  //f.maxiter /= 8;
+  /*Fractal3D f;
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5) * Matrix3D(Matrix3D::ROTATE, 0, 0, 0),
                                          Point3D(0, 0, 0), Colour(0, 0, 0)));
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5),
@@ -50,7 +52,7 @@ int main(int argc, char *argv[])
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5),
                                          Point3D(0, 100, 0), Colour(0, 255, 0)));
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5),
-                                         Point3D(0, 0, 100), Colour(0, 0, 255)));
+                                         Point3D(0, 0, 100), Colour(0, 0, 255)));*/
   f.pos.z = 200;
 
   double px = 0, py = 0;
@@ -59,10 +61,10 @@ int main(int argc, char *argv[])
   while (!quit)
   {
     //specator.set_pos(Point3D(px - 320, py - 240, 0));
-    //specator.set_yaw((px - 320)/320);
-    //specator.set_pitch((py - 240)/240);
-    specator.turn_right((px - 320)/32000);
-    specator.turn_down((py - 240)/24000);
+    specator.set_yaw((px - 320)/320);
+    specator.set_pitch((py - 240)/240);
+    //specator.turn_right((px - 320)/32000);
+    //specator.turn_down((py - 240)/24000);
     specator.update();
     background.draw();
     /*f.pos.x = px - 320;
@@ -88,16 +90,16 @@ int main(int argc, char *argv[])
               quit = true;
               break;
             case SDLK_UP:
-              specator.move(Point3D(0, 0, 10));
+              specator.move_forwards(10);
               break;
             case SDLK_DOWN:
-              specator.move(Point3D(0, 0, -10));
+              specator.move_forwards(-10);
               break;
             case SDLK_LEFT:
-              specator.move(Point3D(-10, 0, 0));
+              specator.move_sidewards(-10);
               break;
             case SDLK_RIGHT:
-              specator.move(Point3D(10, 0, 0));
+              specator.move_sidewards(10);
               break;
           }
           break;

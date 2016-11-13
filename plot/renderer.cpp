@@ -123,3 +123,7 @@ Point2D Renderer::get_offset() const {
 void Renderer::set_transform_matrix(const Matrix3D matrix) {
   transform_matrix = matrix;
 }
+
+const Matrix3D Renderer::get_transform_matrix() const {
+  return transform_matrix;
+}

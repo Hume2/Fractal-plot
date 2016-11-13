@@ -28,6 +28,7 @@ class Renderer
     void set_transform_matrix(const Matrix3D matrix);
 
     Point2D get_offset() const;
+    const Matrix3D get_transform_matrix() const;
 
     SDL_Window* get_window() const {
       return window;

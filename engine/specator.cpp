@@ -26,11 +26,19 @@ void Specator::shift(const Point3D shift) {
   recalculate_matrix();
 }
 
-void Specator::move(const Point3D shift) {
+void Specator::move_forwards(const double shift) {
   Point3D aim = get_aim_vector();
-  pos.x += aim.x * shift.x;
-  pos.y += aim.y * shift.y;
-  pos.z += aim.z * shift.z;
+  pos.x += aim.x * shift;
+  pos.y += aim.y * shift;
+  pos.z += aim.z * shift;
+  recalculate_matrix();
+}
+
+void Specator::move_sidewards(const double shift) {
+  Point3D aim = get_side_vector();
+  pos.x += aim.x * shift;
+  pos.y += aim.y * shift;
+  pos.z += aim.z * shift;
   recalculate_matrix();
 }
 
@@ -65,7 +73,11 @@ Point3D Specator::get_pos() const {
 }
 
 Point3D Specator::get_aim_vector() const {
-  return Point3D(cos(pitch) * cos(yaw), cos(pitch) * sin(yaw), sin(pitch));
+  return Point3D(cos(pitch) * sin(yaw), sin(pitch), cos(pitch) * cos(yaw));
+}
+
+Point3D Specator::get_side_vector() const {
+  return Point3D(cos(pitch) * cos(yaw), sin(pitch), cos(pitch) * sin(yaw));
 }
 
 double Specator::get_pitch() const {

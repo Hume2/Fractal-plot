@@ -52,13 +52,21 @@ class Fractal3D
           transform(transform_),
           pos(pos_),
           chance(chance_),
-          colour(c)
+          colour(c),
+          real_chance(),
+          real_transform()
         { }
 
         Matrix3D transform;
         Point3D pos;
         double chance;
         Colour colour;
+
+      protected:
+        friend class Fractal3D;
+
+        double real_chance;
+        Matrix3D real_transform;
     };
 
     Fractal3D();
@@ -71,11 +79,12 @@ class Fractal3D
 
     void draw();
 
-    double get_chance(int id) const;
+    //double get_chance(int id) const;
     int choose() const;
-    void calculate_chance_suma();
 
   private:
+    void precalculate_branches();
+
     double chance_suma;
 };
 
