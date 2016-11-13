@@ -11,9 +11,7 @@
 
 #include "math/fractal.h"
 #include "math/matrix.h"
-#include "math/point.h"
 
-#include "plot/colour.h"
 #include "plot/renderer.h"
 
 int main(int argc, char *argv[])
