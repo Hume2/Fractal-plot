@@ -10,11 +10,14 @@
 
 #include "../plot/colour.h"
 
+class LispLoader;
 class Matrix3D;
 
 class Model
 {
   protected:
+    friend class ModelManager;
+
     static double r(const double base, const double modifier);
 
     class Transform
@@ -25,8 +28,8 @@ class Model
         Transform(Type type_);
         ~Transform();
 
-        float* data;
-        float* modif;
+        std::vector<float> data;
+        std::vector<float> modif;
         Type type;
 
         Matrix3D get_matrix() const;
@@ -42,9 +45,12 @@ class Model
         std::vector<Transform> transforms;
         Point3D pos, pos_m;
         Colour c, c_m;
-        double chance, chance_m;
+        float chance, chance_m;
 
         const Fractal3D::Branch use_prototype() const;
+
+        void load_from_lisp(LispLoader& lisp);
+        void load_transform_from_lisp(LispLoader& lisp);
     };
 
   public:

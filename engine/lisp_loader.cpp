@@ -1,13 +1,18 @@
-#include "lisp_loader.h"
-
+#include <assert.h>
 #include <sstream>
 #include <iostream>
 
+#include "lisp_loader.h"
+
 LispLoader::LispLoader(std::string filename) :
   f(fopen(filename.c_str(), "r")),
-  c(fgetc(f))
+  c()
 {
-
+  if (!f) {
+    std::cout << "Error: unable to open file " << filename << std::endl;
+    assert(false);
+  }
+  c = fgetc(f);
 }
 
 LispLoader::~LispLoader() {
@@ -45,8 +50,14 @@ void LispLoader::go_up() {
 }
 
 std::string LispLoader::get_key() {
-  go_down();
-  skip_whitespace();
+  bool b = true;
+  while (b) {
+    go_down();
+    b = is_end();
+    if (b) {
+      go_up();
+    }
+  }
   std::string s = "";
   while (c > ' ' && c != ')') {
     s += c;
@@ -62,8 +73,8 @@ bool LispLoader::is_end() {
   return c == ')';
 }
 
-float LispLoader::load_number() {
-  float val = 0;
+bool LispLoader::load_number(float& val) {
+  val = 0;
   float xp = 1;
   bool sgn = false;
 
@@ -74,21 +85,25 @@ float LispLoader::load_number() {
     go_ahead();
   }
 
-  while (c != '.' && c > ' ') {
+  if (c < '0' || c > '9') {
+    return false;
+  }
+
+  while (c >= '0' && c <= '9') {
     val *= 10;
     val += c - '0';
     go_ahead();
   }
   if (c == '.') {
     go_ahead();
-    while (c > ' ') {
+    while (c >= '0' && c <= '9') {
       xp /= 10;
       val += float(c - '0') * xp;
       go_ahead();
     }
   }
 
-  return val;
+  return true;
 }
 
 bool LispLoader::get_num(float* val) {
@@ -97,7 +112,9 @@ bool LispLoader::get_num(float* val) {
     return false;
   }
 
-  *val = load_number();
+  if (!load_number(*val)) {
+    return false;
+  }
 
   go_up();
   return true;
@@ -154,9 +171,13 @@ bool LispLoader::get_string(std::string* val) {
 
 bool LispLoader::get_array(std::vector<float>* val) {
   val->clear();
+  float num = 0;
 
-  while (!is_end()) {
-    val->push_back(load_number());
+  skip_whitespace();
+
+  while (load_number(num)) {
+    val->push_back(num);
+    skip_whitespace();
   }
 
   go_up();

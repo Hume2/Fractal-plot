@@ -2,7 +2,11 @@
 #include <time.h>
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
+#include <string>
+#include <vector>
 
+#include "lisp_loader.h"
 #include "model.h"
 
 #include "../math/matrix.h"
@@ -12,13 +16,16 @@ Model::Transform::Transform(Type type_) :
   modif(),
   type(type_)
 {
-  data = new float[get_count()];
-  modif = new float[get_count()];
+  data.resize(get_count());
+  modif.resize(get_count());
+  for (int i = get_count() - 1; i >= 0; i--) {
+    data[i] = 0;
+    modif[i] = 0;
+  }
 }
 
 Model::Transform::~Transform() {
-  delete[] data;
-  delete[] modif;
+
 }
 
 int Model::Transform::get_count() const {
@@ -32,10 +39,15 @@ int Model::Transform::get_count() const {
 }
 
 double Model::r(const double base, const double modifier) {
+  if (modifier == 0) {
+    return base;
+  }
+
   double rn = fmodf(rand(), modifier);
   if (rn < 0) {
     rn *= -1;
   }
+  std::cout << "base:" << base << " modifier:" << modifier << " result:" << (base+rn) << std::endl;
   return base + rn;
 }
 
@@ -62,12 +74,12 @@ Matrix3D Model::Transform::get_matrix() const {
 
 Model::Branch::Branch() :
   transforms(),
-  pos(),
-  pos_m(),
-  c(),
-  c_m(),
-  chance(),
-  chance_m()
+  pos(0, 0, 0),
+  pos_m(0, 0, 0),
+  c(0, 0, 0),
+  c_m(0, 0, 0),
+  chance(1),
+  chance_m(0)
 {
 
 }
@@ -88,9 +100,96 @@ const Fractal3D::Branch Model::Branch::use_prototype() const {
   return Fractal3D::Branch(matrix, position, colour, r(chance, chance_m));
 }
 
+void Model::Branch::load_from_lisp(LispLoader &lisp) {
+  std::string key;
+  std::vector<float> array;
+
+  while (!lisp.is_end()) {
+    key = lisp.get_key();
+
+    if (key == "chance") {
+      lisp.get_num( &chance );
+    } else if (key == "chance_modifier") {
+      lisp.get_num( &chance_m );
+    } else if (key == "pos") {
+      lisp.get_array( &array );
+      pos.x = array[0];
+      pos.y = array[1];
+      pos.z = array[2];
+    } else if (key == "pos_modifier") {
+      lisp.get_array( &array );
+      pos_m.x = array[0];
+      pos_m.y = array[1];
+      pos_m.z = array[2];
+    } else if (key == "colour") {
+      lisp.get_array( &array );
+      c.r = int(array[0]);
+      c.g = int(array[1]);
+      c.b = int(array[2]);
+    } else if (key == "colour_modifier") {
+      lisp.get_array( &array );
+      c_m.r = int(array[0]);
+      c_m.g = int(array[1]);
+      c_m.b = int(array[2]);
+    } else if (key == "transform") {
+      load_transform_from_lisp(lisp);
+    } else {
+      lisp.go_up();
+    }
+  }
+
+  lisp.go_up();
+}
+
+void Model::Branch::load_transform_from_lisp(LispLoader &lisp) {
+  std::string key, type_s;
+  std::vector<float> data, modif;
+  Transform::Type type = Transform::MATRIX;
+
+  while (!lisp.is_end()) {
+    key = lisp.get_key();
+
+    if (key == "type") {
+      lisp.get_string( &type_s );
+
+      if (type_s == "matrix") {
+        type = Transform::MATRIX;
+      } else if (type_s == "translate") {
+        type = Transform::TRANSLATE;
+      } else if (type_s == "rotate") {
+        type = Transform::ROTATE;
+      } else if (type_s == "scale") {
+        type = Transform::SCALE;
+      } else if (type_s == "shear") {
+        type = Transform::SHEAR;
+      } else {
+        std::cout << "Error: unknown type of transform: " << type_s << std::endl;
+      }
+
+    } else if (key == "data") {
+      lisp.get_array( &data );
+    } else if (key == "modif") {
+      lisp.get_array( &modif );
+    } else {
+      lisp.go_up();
+    }
+  }
+
+  Transform t(type);
+
+  for (int i = t.get_count() - 1; i >= 0; i--) {
+    t.data[i] = data[i];
+    t.modif[i] = modif[i];
+  }
+
+  transforms.push_back(t);
+
+  lisp.go_up();
+}
+
 Model::Model() :
-  maxiter(),
-  offscreen_factor(),
+  maxiter(1000),
+  offscreen_factor(100),
   branches()
 {
 

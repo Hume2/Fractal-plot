@@ -27,7 +27,7 @@ class LispLoader
     char c;
 
     void skip_whitespace();
-    float load_number();
+    bool load_number(float& val);
 
     inline void go_ahead() {
       c = fgetc(f);

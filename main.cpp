@@ -7,6 +7,7 @@
 
 #include "main.h"
 
+#include "engine/model_manager.h"
 #include "engine/specator.h"
 
 #include "math/fractal.h"
@@ -31,8 +32,9 @@ int main(int argc, char *argv[])
                                        Point3D(6400, 4800, 0), Colour(100, 200, 255)));
   background.pos = Point3D(-3200, -2400, 4000);
   background.maxiter *= 500;
+  background.offscreen_factor = 10000;
 
-  Fractal3D f;
+  /*Fractal3D f;
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.3, -0.7, 0.3),
                                        Point3D(0, 0, 0), Colour(196, 81, 12)));
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.611, 0.611, 0.611) * Matrix3D(Matrix3D::ROTATE, 0, 1.12, 0),
@@ -40,7 +42,7 @@ int main(int argc, char *argv[])
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.591, 0.591, 0.591) * Matrix3D(Matrix3D::ROTATE, 1.03, 1.04, 0),
                                        Point3D(-20, -52, 37), Colour(125, 231, 0)));
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.540, 0.540, 0.540) * Matrix3D(Matrix3D::ROTATE, -1.23, 1.18, 0),
-                                       Point3D(-24, -43, -35), Colour(68, 240, 0)));
+                                       Point3D(-24, -43, -35), Colour(68, 240, 0)));*/
   //f.maxiter /= 8;
   /*Fractal3D f;
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5) * Matrix3D(Matrix3D::ROTATE, 0, 0, 0),
@@ -51,7 +53,14 @@ int main(int argc, char *argv[])
                                          Point3D(0, 100, 0), Colour(0, 255, 0)));
   f.branches.push_back(Fractal3D::Branch(Matrix3D(Matrix3D::SCALE, 0.5, 0.5, 0.5),
                                          Point3D(0, 0, 100), Colour(0, 0, 255)));*/
+  //f.pos.z = 200;
+
+  ModelManager mm;
+  mm.init_from_lisp();
+
+  Fractal3D f = mm.fabricate("test:tetrahedron");
   f.pos.z = 200;
+  //return 0;
 
   double px = 0, py = 0;
   int last_ticks = SDL_GetTicks();
@@ -71,7 +80,7 @@ int main(int argc, char *argv[])
     renderer.update_window();
 
     int next_ticks = SDL_GetTicks();
-    std::cout << (1000 / (next_ticks - last_ticks + 1)) << "FPS" << std::endl;
+    //std::cout << (1000 / (next_ticks - last_ticks + 1)) << "FPS" << std::endl;
     last_ticks = next_ticks;
 
     SDL_Event event;
