@@ -63,7 +63,7 @@ std::string LispLoader::get_key() {
     s += c;
     go_ahead();
   }
-  std::cout << "Loaded key: " << s << std::endl;
+  //std::cout << "Loaded key: " << s << std::endl;
 
   return s;
 }
@@ -101,6 +101,10 @@ bool LispLoader::load_number(float& val) {
       val += float(c - '0') * xp;
       go_ahead();
     }
+  }
+
+  if (sgn) {
+    val = -val;
   }
 
   return true;

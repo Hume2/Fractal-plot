@@ -47,7 +47,7 @@ double Model::r(const double base, const double modifier) {
   if (rn < 0) {
     rn *= -1;
   }
-  std::cout << "base:" << base << " modifier:" << modifier << " result:" << (base+rn) << std::endl;
+  //std::cout << "base:" << base << " modifier:" << modifier << " result:" << (base+rn) << std::endl;
   return base + rn;
 }
 
@@ -92,6 +92,7 @@ const Fractal3D::Branch Model::Branch::use_prototype() const {
   Matrix3D matrix;
   for (auto& it : transforms) {
     matrix.add_transform(it.get_matrix());
+    //matrix *= it.get_matrix();
   }
 
   Colour colour(r(c.r, c_m.r), r(c.g, c_m.g), r(c.b, c_m.b));
