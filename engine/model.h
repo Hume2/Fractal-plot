@@ -25,8 +25,8 @@ class Model
         Transform(Type type_);
         ~Transform();
 
-        int* data;
-        int* modif;
+        float* data;
+        float* modif;
         Type type;
 
         Matrix3D get_matrix() const;

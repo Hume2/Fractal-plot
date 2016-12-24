@@ -12,8 +12,8 @@ Model::Transform::Transform(Type type_) :
   modif(),
   type(type_)
 {
-  data = new int[get_count()];
-  modif = new int[get_count()];
+  data = new float[get_count()];
+  modif = new float[get_count()];
 }
 
 Model::Transform::~Transform() {
