@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string>
+#include <iostream>
 
 class Point3D;
 
@@ -32,6 +33,9 @@ class Point2D
     std::string to_string() const;
 
     bool is_on_screen() const;
+
+    void save(FILE* f);
+    void load(FILE* f);
 };
 
 class Point3D
@@ -58,6 +62,9 @@ class Point3D
     Point3D& operator/=(const double a);
 
     std::string to_string() const;
+
+    void save(FILE* f);
+    void load(FILE* f);
 };
 
 #endif // POINT_H

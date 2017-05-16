@@ -1,6 +1,8 @@
 #ifndef COLOUR_H
 #define COLOUR_H
 
+#include <stdio.h>
+#include <iostream>
 
 class Colour
 {
@@ -15,6 +17,9 @@ class Colour
     Colour& operator*=(const Colour a);
 
     void average(const Colour a);
+
+    void save(FILE* f);
+    void load(FILE* f);
 
     unsigned char r, g, b;
 };

@@ -16,7 +16,10 @@ class ModelManager
     ModelManager();
     ~ModelManager();
 
+    void load();
+    void save();
     void init_from_lisp();
+    static std::string get_model_path();
 
     const Model& get_model(std::string id) const;
     Fractal3D fabricate(std::string id) const;

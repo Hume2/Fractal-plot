@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <stdio.h>
 #include <iostream>
 #include <random>
@@ -81,8 +82,14 @@ void Fractal3D::precalculate_branches() {
                                   branches[id].transform *
                                   Matrix3D(Matrix3D::TRANSLATE, -p.x, -p.y, -p.z);
 
-    branches[id].real_chance = branches[id].chance / (p.z + pos.z) * 100;
+    Point3D rel_point = Renderer::current()->get_transform_matrix().apply_transform(p);
+    if (rel_point.z > 0.01f) {
+      branches[id].real_chance = branches[id].chance / rel_point.z * 100;
+    } else {
+      branches[id].real_chance = branches[id].chance;
+    }
     chance_suma += branches[id].real_chance;
+    //chance_suma += branches[id].chance;
   }
 }
 
@@ -101,10 +108,12 @@ void Fractal3D::draw() {
   precalculate_branches();
   Point3D seed;
   Colour colour;
-  int off_screen;
-  float distance_factor = 200.0f / pos.z; // Draw less points when farther
-  distance_factor *= distance_factor;
-  for (int i = maxiter * distance_factor; i > 0; i--) {
+  int off_screen = 0;
+  Point3D rel_point = Renderer::current()->get_transform_matrix().apply_transform(pos);
+  //float rel_z = pos.z - Renderer::relative_pos.z;
+  float distance_factor = (rel_point.z > 0.1f) ? (1.0f / rel_point.z) : 10.0f; // Draw less points when farther
+  //distance_factor *= distance_factor;
+  for (int i = maxiter  * distance_factor; i > 0; i--) {
     int r = choose();
     colour.average(branches[r].colour);
     /*Point3D& vertex_pos = branches[r].real_pos;

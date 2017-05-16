@@ -9,6 +9,7 @@
 #include "colour.h"
 #include "../main.h"
 
+Point3D Renderer::relative_pos = Point3D(0, 0, 0);
 Renderer* Renderer::s_current = NULL;
 Point2D Renderer::center = Point2D(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 float Renderer::perspective_factor = 400;

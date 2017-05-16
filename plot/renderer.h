@@ -16,6 +16,8 @@ class Renderer
 
     static Renderer* current();
 
+    static Point3D relative_pos;
+
     void update_window();
 
     //Returns false when not drawn

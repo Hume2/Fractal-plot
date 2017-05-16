@@ -23,7 +23,7 @@ class Model
     class Transform
     {
       public:
-        enum Type {MATRIX, TRANSLATE, ROTATE, SHEAR, SCALE};
+        enum Type {MATRIX = 1, TRANSLATE = 2, ROTATE = 3, SHEAR = 4, SCALE = 5};
 
         Transform(Type type_);
         ~Transform();
@@ -34,6 +34,8 @@ class Model
 
         Matrix3D get_matrix() const;
         int get_count() const;
+
+        void save(FILE* f);
     };
 
     class Branch
@@ -49,6 +51,8 @@ class Model
 
         const Fractal3D::Branch use_prototype() const;
 
+        void load(FILE* f);
+        void save(FILE* f);
         void load_from_lisp(LispLoader& lisp);
         void load_transform_from_lisp(LispLoader& lisp);
     };
@@ -59,6 +63,9 @@ class Model
 
     int maxiter, offscreen_factor;
     std::vector<Branch> branches;
+
+    void load(FILE* f);
+    void save(FILE* f);
 
     Fractal3D use_prototype() const;
 };

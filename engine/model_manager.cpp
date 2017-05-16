@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <iostream>
+#include <stdio.h>
 
 #include "model_manager.h"
 #include "lisp_loader.h"
@@ -83,4 +84,40 @@ Fractal3D ModelManager::fabricate(std::string id) const {
   } else {
     return models.begin()->second.use_prototype();
   }
+}
+
+std::string ModelManager::get_model_path() {
+  return "data/models.dat";
+}
+
+void ModelManager::save() {
+  FILE* f = fopen(get_model_path().c_str(), "w");
+  for (auto it = models.begin(); it != models.end(); ++it) {
+    fputs(it->first.c_str(), f);
+    fputc(0, f);
+    it->second.save(f);
+  }
+  fclose(f);
+}
+
+void ModelManager::load() {
+  FILE* f = fopen(get_model_path().c_str(), "r");
+  while (!feof(f)) {
+    char ch = fgetc(f);
+    std::string id = "";
+    while (ch != 0 && !feof(f)) {
+      id += ch;
+      ch = fgetc(f);
+    }
+
+    if (feof(f)) {
+      break;
+    }
+
+    Model model;
+    model.load(f);
+
+    models[id] = model;
+  }
+  fclose(f);
 }

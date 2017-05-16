@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <math.h>
 #include <time.h>
 #include <cstdlib>
@@ -69,6 +70,15 @@ Matrix3D Model::Transform::get_matrix() const {
                       r(data[1], modif[1]),                    1, r(data[4], modif[4]), 0,
                       r(data[3], modif[3]), r(data[5], modif[5]),                    1, 0,
                                          0,                    0,                    0, 1);
+  }
+}
+
+void Model::Transform::save(FILE *f) {
+  fwrite(&type, sizeof(Type), 1, f);
+
+  for (int i = 0; i < get_count(); i++) {
+    fwrite(&(data[i]), sizeof(float), 1, f);
+    fwrite(&(modif[i]), sizeof(float), 1, f);
   }
 }
 
@@ -188,6 +198,52 @@ void Model::Branch::load_transform_from_lisp(LispLoader &lisp) {
   lisp.go_up();
 }
 
+void Model::Branch::save(FILE *f) {
+  pos.save(f);
+  pos_m.save(f);
+
+  c.save(f);
+  c_m.save(f);
+
+  fwrite(&chance, sizeof(float), 1, f);
+  fwrite(&chance_m, sizeof(float), 1, f);
+
+  char transform_count = transforms.size();
+  fwrite(&transform_count, sizeof(char), 1, f);
+
+  for (auto it = transforms.begin(); it != transforms.end(); ++it) {
+    it->save(f);
+  }
+}
+
+void Model::Branch::load(FILE *f) {
+  pos.load(f);
+  pos_m.load(f);
+
+  c.load(f);
+  c_m.load(f);
+
+  assert(fread(&chance, sizeof(float), 1, f));
+  assert(fread(&chance_m, sizeof(float), 1, f));
+
+  char transform_count;
+  assert(fread(&transform_count, sizeof(char), 1, f));
+  transforms.clear();
+
+  for (int i = transform_count - 1; i >= 0; i--) {
+    Transform::Type type;
+    assert(fread(&type, sizeof(Transform::Type), 1, f));
+
+    Transform transform(type);
+    for (int j = 0; j < transform.get_count(); j++) {
+      assert(fread(&(transform.data[i]), sizeof(float), 1, f));
+      assert(fread(&(transform.modif[i]), sizeof(float), 1, f));
+    }
+
+    transforms.push_back(transform);
+  }
+}
+
 Model::Model() :
   maxiter(1000),
   offscreen_factor(100),
@@ -212,3 +268,27 @@ Fractal3D Model::use_prototype() const {
   return result;
 }
 
+void Model::save(FILE *f) {
+  fwrite(&maxiter, sizeof(int), 1, f);
+  fwrite(&offscreen_factor, sizeof(int), 1, f);
+
+  char branch_count = branches.size();
+  fwrite(&branch_count, sizeof(char), 1, f);
+
+  for (auto it = branches.begin(); it != branches.end(); ++it) {
+    it->save(f);
+  }
+}
+
+void Model::load(FILE *f) {
+  assert(fread(&maxiter, sizeof(int), 1, f));
+  assert(fread(&offscreen_factor, sizeof(int), 1, f));
+
+  char branch_count;
+  assert(fread(&branch_count, sizeof(char), 1, f));
+  branches.resize(branch_count);
+
+  for (auto it = branches.begin(); it != branches.end(); ++it) {
+    it->load(f);
+  }
+}

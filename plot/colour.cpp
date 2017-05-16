@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <assert.h>
 #include <stdio.h>
 
 #include "colour.h"
@@ -48,4 +49,16 @@ void Colour::average(const Colour a) {
   r = (r + a.r) / 2;
   g = (g + a.g) / 2;
   b = (b + a.b) / 2;
+}
+
+void Colour::save(FILE *f) {
+  fwrite(&r, sizeof(unsigned char), 1, f);
+  fwrite(&g, sizeof(unsigned char), 1, f);
+  fwrite(&b, sizeof(unsigned char), 1, f);
+}
+
+void Colour::load(FILE *f) {
+  assert(fread(&r, sizeof(unsigned char), 1, f));
+  assert(fread(&g, sizeof(unsigned char), 1, f));
+  assert(fread(&b, sizeof(unsigned char), 1, f));
 }

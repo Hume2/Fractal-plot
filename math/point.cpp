@@ -1,3 +1,5 @@
+#include <assert.h>
+
 #include "point.h"
 
 #include "../main.h"
@@ -80,6 +82,16 @@ bool Point2D::is_on_screen() const {
          y < SCREEN_HEIGHT - offset.y && y >= -offset.y;
 }
 
+void Point2D::save(FILE *f) {
+  fwrite(&x, sizeof(double), 1, f);
+  fwrite(&y, sizeof(double), 1, f);
+}
+
+void Point2D::load(FILE *f) {
+  assert(fread(&x, sizeof(double), 1, f));
+  assert(fread(&y, sizeof(double), 1, f));
+}
+
 //------------------------------------------------------------------------------
 // Point3D
 //------------------------------------------------------------------------------
@@ -160,4 +172,16 @@ Point3D& Point3D::operator /=(const double a) {
   y /= a;
   z /= a;
   return *this;
+}
+
+void Point3D::save(FILE *f) {
+  fwrite(&x, sizeof(double), 1, f);
+  fwrite(&y, sizeof(double), 1, f);
+  fwrite(&z, sizeof(double), 1, f);
+}
+
+void Point3D::load(FILE *f) {
+  assert(fread(&x, sizeof(double), 1, f));
+  assert(fread(&y, sizeof(double), 1, f));
+  assert(fread(&z, sizeof(double), 1, f));
 }
